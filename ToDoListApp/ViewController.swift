@@ -16,11 +16,12 @@ class ViewController: UIViewController, UITableViewDataSource {
         return table
     }()
     
-    //This is the table that stores our reminder entries
+    //This is the list that stores our reminder entries
     var items = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.items = UserDefaults.standard.stringArray(forKey: "items") ?? []
         // Do any additional setup after loading the view.
         title = "To Do List"
         view.addSubview(table)
@@ -48,6 +49,12 @@ class ViewController: UIViewController, UITableViewDataSource {
                 if let text = field.text, !text.isEmpty {
                     //There is where a new to do list item is added
                     DispatchQueue.main.async{
+                        //These next four lines ensure that items are saved
+                        //when is app is closed out
+                        //where text is the new item
+                        var currentItems = UserDefaults.standard.stringArray(forKey: "items") ?? []
+                        currentItems.append(text)
+                        UserDefaults.standard.setValue(currentItems, forKey: "items")
                         //? means optional
                         self?.items.append(text)
                         self?.table.reloadData()
